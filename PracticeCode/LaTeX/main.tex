@@ -1,0 +1,87 @@
+\documentclass[conference]{IEEEtran}
+\usepackage[UTF8]{ctex}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{makecell}
+
+
+\title{计算机视觉：单图像去雾}
+\author{\underline{\underline{郭天琦-(\LaTeX{})-09021102}}}
+\begin{document}
+
+\maketitle
+\section{兴趣方向}
+早期图像去雾的研究并没有得到应有的重视，很多人认为它的实际意义不大，甚至觉得所谓的去雾算法多是些华而不实的花拳绣腿，缺乏学术上的价值。然而随着计算机视觉系统的发展及其在军事、交通以及安全监控等领域的发展, 图像去雾已成为计算机视觉的重要研究方向。 在雾、霾之类的恶劣天气下采集的图像会由于大气散射的作用而被严重降质, 使图像颜色偏灰白色, 对比度降低, 物体特
+征难以辨认, 不仅使视觉效果变差, 图像观赏性降低, 还会影响图像后期的处理, 更会影响各类依赖于光学成像仪器的系统工
+作, 如卫星遥感系统、航拍系统、室外监控和目标识别系统等. 因此, 需要图像去雾技术来增强或修复, 以改善视觉效果和方便
+后期处理.\cite{吴迪2015图像去雾的最新研究进展}
+
+目前的方法主要可以分为两大类：
+第一类是基于图像增强的方法, 这
+类方法是对被降质的图像进行增强, 改善图像的质量，缺点是可能会造成
+图像部分信息的损失, 使图像失真。
+第二类是基于物理模型的方法, 这种方法通过研究大气悬浮颗粒对光的散射作用, 建立大气散射模型, 了解图像退化的物理机理, 并推演出未降质前的图像，效果较好。
+利用大气散射模型
+的方法, 总体上又可以分为三类: 第 1 类是基于深度信
+息的方法; 第 2 类是基于大气光偏振特性的去雾算
+法; 第 3 类是基于先验知识的方法。
+\section{经典论文}
+我选择了何恺明博士的《基于暗通道先验的单幅图像去雾》，正是上文提到的第3类，在图像去雾这个领域，几乎没有人不知道这篇文章，该文是 2009 年 CVPR（IEEE 国际计算机
+视觉与模式识别会议）最佳论文，其中提出的暗通道先验被广泛使用。
+\subsection{原理}
+本文提出了暗通道假设，它基于作者统计5000多幅图像后发现的规律：清晰无雾图片中非天空区域外的任一局部区域像素至少有一个通道值很低，几乎趋近于零，作者将其称为暗通道。由于在有雾图像中，暗像素的强度主要由被雾反射后的光线贡献，所以利用这个假设和图像退化模型，我们可以直接估计雾的厚度，并恢复高质量的无雾图像。
+\subsection{过程}
+图像退化模型被表述为：
+\begin{equation}
+    \mathbf{I}(x) = \mathbf{J}(x)t(x) + \mathbf{A}(1-t(x))
+\end{equation}
+其中，$I$表示为获得的图片或者强度，或者说是待去雾的图片；$J$ 表示场景光辉，或者说是要恢复的无雾的图片；$A$表示地球大气中光的成分；$t$ 表示非散射光到达相机部分的介质传输。而去雾的目的就是从 $I$中恢复$J$，$A$和$t$，显然不加限制条件的话是有无穷多解的。
+
+数学方面关于暗通道理论的定义：
+\begin{equation}
+    {J}^{dark}(x) = \underset{y\in\Omega(x)}{min} (\underset{c\in\{r,g,b\}}{min} J^c(y))\rightarrow0
+\end{equation}
+结合(1)(2)式可以求出透过率分布：
+\begin{equation}
+    t(x) = 1 - \omega \underset{c\in\{r,g,b\}}{min}(\underset{y\in\Omega(x)}{min} \frac{I^c(y)}{A^c})
+\end{equation}
+
+其中$\omega$是人为添加的控制因子，实际上，即使在晴朗的日子，大气中也并非完全没有任何粒子。所以当我们看远处的物体时，雾气仍然存在。此外，雾气的存在是人类感知深度的基本线索，这种现象被称为空中透视。如果彻底去除雾气，图像反而可能会看起来不自然，而且也会有失去深度的感觉，所以$\omega$一般设为0.95左右。\cite{he2010single}
+这样得到的透射率图比较粗糙，进一步优化的方法何博士先后给出了两种：软抠图和导向滤波，此处不赘述。
+最终的恢复公式如下：
+\begin{equation}
+    J(x) = \frac{I(x)-A}{max(t(x),t_0)} + A
+\end{equation}
+\newpage
+
+
+\section{领域内相关信息}
+大多数去雾思路是通过提取相同地点多张图像（如不同天气）或者额外已知信息来
+消除雾霾的影响。在单图去雾方向，Tan,Fattal,He做出了巨大贡献：
+Tan观察到无雾图像与有雾图像相比，必须具有更高的对比度，他通过最大化修复图像的局部对比度来去雾。其结果在视觉上很有说服力，但在物理上可能并不有效。\cite{tan2008visibility}
+Fattal估计了场景的反照率，然后推断出介质的传输，其假设是投射和表面阴影是局部不相关的。Fattal的方法在物理上是合理的，可以产生让人印象深刻的效果，然而这种假设会在重度雾霾下会被打破。\cite{fattal2008single}
+何博士在单图去雾方向创新的从物理角度提出了暗通道先验理论，结果证明在视觉和物理上都是有效的。
+局限在于当图像中有很大的区域和空气中的光线本质相似时，暗通道先验可能失效。
+\par
+
+\begin{tabular}{|p{2cm}|p{2cm}|p{2cm}|p{11cm}|}
+\hline
+    关键词 & 学者 & 会议 & 论文\\
+\hline
+    图像去雾, 图像增强, 大气散射模型,图像修复 &
+    \makecell{Tan R T \\ Fattal R \\ He K\\Sun J}&
+    \makecell{CVPR \\ICLR \\ NeurIPS} &
+    \makecell[l]{Tan R T. Visibility in bad weather from a single image.
+\\Fattal R. Single image dehazing.
+\\ He K,Sun J. Single image haze removal using dark channel prior.
+\\Bolun Cai.DehazeNet System for Single Image Haze Removal.
+\\QingSong Zhu.A Fast Single Image Haze Removal Algorithm Using\\ Color Attenuation Prior.
+}\\
+\hline
+\end{tabular}
+
+\bibliographystyle{IEEEtran}
+\bibliography{ref}
+
+\end{document}
