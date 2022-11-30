@@ -10,7 +10,6 @@
                 "${file}",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
-               // "-fexec-charset=GBK"
             ],
             "options": {
                 "cwd": "${fileDirname}"
