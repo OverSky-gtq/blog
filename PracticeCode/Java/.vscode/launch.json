@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Javahelloworld",
+            "request": "launch",
+            "mainClass": "Javahelloworld",
+            "projectName": "Java_af6592a2"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}",
