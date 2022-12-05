@@ -49,27 +49,27 @@ bool Graph::insertEdge(int v1, int v2, int cost) {
 }
 
 
-bool Topologicalsort(Graph &G) {
+bool Topologicalsort(Graph &G) {    //拓扑排序
     stack<int> S;
     for (int i = 0; i < G.num_vertices; ++i) {
-        if (G.indegree[i] == 0) {
-            S.push(i);
+        if (G.indegree[i] == 0) {    
+            S.push(i);       //存入所有入度为0的点
         }
     }
     int count = 0;
     while (!S.empty()) {
-        int i = S.top();
+        int i = S.top();    //取栈顶元素并输出
         S.pop();
         cout << i << " ";
         ++count;
-        for (auto p = G.vertexTable[i].first; p != nullptr; p = p->next) {
+        for (auto p = G.vertexTable[i].first; p != nullptr; p = p->next) { //删除此点，此点指向的所有点入度-1
             int v = p->dest;
-            if (!(--G.indegree[v])) {
+            if (!(--G.indegree[v])) {  //更新入度数组，入度为0的再次存入栈
                 S.push(v);
             }
         }
     }
-    if (count < G.num_vertices) {
+    if (count < G.num_vertices) {   //若有未访问的点，则排序失败
         return false;
     }
     else {

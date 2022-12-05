@@ -7,11 +7,11 @@ typedef struct Adjacent_node {
     int cost;  //顶点与此邻接顶点形成的边上的权?
     Adjacent_node* next;   //下一个邻接顶点
     Adjacent_node(int destination = -1, int weight = 1) :dest(destination), cost(weight), next(nullptr) {}
-} Edge;   //主流命名是“Edge�?
+} Edge;
 
 struct Vertex {
-    int data;    //顶点数据�?
-    Adjacent_node* first;   //随便一个邻接结点作为边链表头结�?
+    int data;    //顶点数据
+    Adjacent_node* first;   //随便一个邻接结点作为边链表头结点
     Vertex() { data = 0;  first = new Adjacent_node(); }
 };
 
@@ -28,7 +28,7 @@ public:
     int getNextNeighbor(int v, int w);
     int num_edges, num_vertices;  //顶点数量、边数量
 private:
-    Vertex* vertexTable;   //顶点�?
+    Vertex* vertexTable;   //顶点表
 };
 int Graph::getFirstNeighbor(int v) {
     auto p = vertexTable[v].first;
@@ -81,7 +81,7 @@ void BFS_minDistance(Graph &G, int u) {
         Q.pop();
         for (int w = G.getFirstNeighbor(u); w >= 0; w = G.getNextNeighbor(u, w)) {
             if (!visited[w]) {
-                d[w] = d[u] + 1;
+                d[w] = d[u] + 1;   //到w的距离=到上一个点的距离+1
                 visited[w] = true;
                 Q.push(w);
             }
