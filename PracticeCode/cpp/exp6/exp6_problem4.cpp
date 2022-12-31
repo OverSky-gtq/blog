@@ -52,7 +52,11 @@ int main()
     vector<string> equation;
     equation.push_back("a==b");
     equation.push_back("b==c");
+<<<<<<< HEAD
     //equation.push_back("a!=b");
+=======
+    equation.push_back("a!=b");
+>>>>>>> 822dd3b (updata)
     if(equationsPossible(equation)) {
         cout<<"存在"<<endl;
     }
